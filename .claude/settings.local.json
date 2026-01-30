@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(npx nuxi typecheck:*)",
+      "Bash(cat:*)",
+      "Bash(timeout 15 tail:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}
