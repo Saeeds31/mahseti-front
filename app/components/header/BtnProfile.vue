@@ -1,21 +1,24 @@
+<!-- components/header/BtnProfile.vue -->
 <template>
   <!-- Profile Button - لاگین نکرده -->
   <button
     v-if="!user"
     @click="loginModal = true"
-    class="icon-btn p-2 rounded-full transition hover:bg-secondary"
+    class="border-2 border-gray-300 p-2 rounded-xl transition"
   >
-    <iconProfile />
+    <img src="/icons/user.svg" />
   </button>
 
   <!-- User Profile Dropdown - لاگین کرده -->
   <div v-else class="relative" ref="dropdownRef">
     <button
       @click="toggleDropdown"
-      class="  flex items-center gap-2 py-2 px-4 rounded-inner lg:rounded bg-secondary-fade hover:bg-secondary transition"
+      class="flex items-center gap-2 py-2 px-2 rounded-xl border-2 border-gray-300 transition"
     >
-      <span class="  font-medium">{{ user.full_name || user.mobile }}</span>
-      <iconProfile class="w-5 h-5" />
+      <span class="font-medium text-xs">{{
+        user.full_name || user.mobile
+      }}</span>
+      <img src="/icons/user.svg" />
     </button>
 
     <!-- Dropdown Menu -->
@@ -37,8 +40,18 @@
             @click="isDropdownOpen = false"
             class="flex items-center gap-2 px-4 py-2 text-sm hover:bg-secondary-fade transition"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
             </svg>
             <span>پنل کاربری</span>
           </nuxt-link>
@@ -47,8 +60,18 @@
             @click="handleLogout"
             class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
             </svg>
             <span>خروج از حساب</span>
           </button>
@@ -62,49 +85,49 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useSettingStore } from '~/store/settings'
-import { useAuth } from '~/composables/useAuth'
-import { useApiAuth } from '~/composables/useAuth'
+import { ref, onMounted, onUnmounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useSettingStore } from "~/store/settings";
+import { useAuth } from "~/composables/useAuth";
+import { useApiAuth } from "~/composables/useAuth";
 
-const { logout } = useApiAuth()
-const { loginModal } = useAuth()
+const { logout } = useApiAuth();
+const { loginModal } = useAuth();
 
-const settingStore = useSettingStore()
-const { user } = storeToRefs(settingStore)
+const settingStore = useSettingStore();
+const { user } = storeToRefs(settingStore);
 
-const { $toast } = useNuxtApp()
+const { $toast } = useNuxtApp();
 
 // Dropdown
-const isDropdownOpen = ref(false)
-const dropdownRef = ref(null)
+const isDropdownOpen = ref(false);
+const dropdownRef = ref(null);
 
 const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
-}
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
 
 const handleLogout = async () => {
-  isDropdownOpen.value = false
-  await logout()
-  $toast.success('با موفقیت خارج شدید')
-  navigateTo('/')
-}
+  isDropdownOpen.value = false;
+  await logout();
+  $toast.success("با موفقیت خارج شدید");
+  navigateTo("/");
+};
 
 // بستن dropdown با کلیک خارج از آن
 const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
-    isDropdownOpen.value = false
+    isDropdownOpen.value = false;
   }
-}
+};
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener("click", handleClickOutside);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -117,9 +140,12 @@ onUnmounted(() => {
   background-color: var(--bg-secondary);
 }
 
-.w-modal { max-width: 420px; width: 100%; }
+.w-modal {
+  max-width: 420px;
+  width: 100%;
+}
 
 section#loginModal form input {
-  background-color: #0000000D;
+  background-color: #0000000d;
 }
 </style>

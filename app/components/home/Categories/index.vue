@@ -1,9 +1,9 @@
 <template>
-  <section class="container gap pt-20">
-    <homeTitleSection
-      titleBlack="دسته بندی"
-      titleStrong="محصولات"
-      description="میوه های خشک سالم و خوشمزه میان وعده ای انرژی بخش برای هر روز"
+  <section class="container gap">
+    <HomeTitleSection
+      titleBlack="دسته بندی های"
+      titleStrong="ما"
+      description=" راحتی، تنوع، پوشش زیبا، و تجربه خریدی فراموش‌نشدنی"
     />
 
     <Swiper
@@ -11,23 +11,20 @@
       :breakpoints="{
         0: {
           slidesPerView: 1.2,
-          spaceBetween: 16
+          spaceBetween: 16,
         },
         640: {
           slidesPerView: 2.2,
-          spaceBetween: 16
+          spaceBetween: 16,
         },
         1024: {
           slidesPerView: 4,
-          spaceBetween: 16
-        }
+          spaceBetween: 16,
+        },
       }"
     >
-      <SwiperSlide
-        v-for="(item, index) in categories"
-        :key="index"
-      >
-        <homeCategoriesCard :item="item" />
+      <SwiperSlide v-for="(item, index) in categories" :key="index">
+        <HomeCategoriesCard :item="item" />
       </SwiperSlide>
     </Swiper>
   </section>

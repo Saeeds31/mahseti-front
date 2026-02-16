@@ -26,7 +26,7 @@
 
 
     <button
-      class="btn w-full mt-5 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors"
+      class="btn w-full mt-5 py-2 px-4 !bg-pink-600 text-white rounded-lg hover:bg-green-500 transition-colors"
       @click="applyFilters"
     >
       اعمال فیلتر

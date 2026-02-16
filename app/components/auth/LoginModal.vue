@@ -1,3 +1,4 @@
+<!-- components/auth/LoginModal.vue -->
 <template>
   <Teleport to="body">
     <div

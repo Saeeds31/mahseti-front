@@ -1,56 +1,58 @@
+// plugins/axios.js
 import axios from "axios";
-import { useCookie } from "#app";
-import { getCookie as h3GetCookie } from "h3"; // ایمپورت getCookie از h3
+import { getCookie as h3GetCookie } from "h3";
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig();
+
   const api = axios.create({
-    baseURL: "https://api.vitamixfruit.com/api/v1",
-    timeout: 15000, // افزایش timeout به 15 ثانیه
+    baseURL: process.server
+      ? `${config.public.apiBase}/api/v1`
+      : "/api-proxy/api/v1",
+    timeout: 15000,
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
     },
-    withCredentials: true, // برای ارسال کوکی‌ها در درخواست‌ها
+    withCredentials: true,
   });
 
-  // افزودن توکن به هر درخواست
-  api.interceptors.request.use((config) => {
+  api.interceptors.request.use((configReq) => {
     let token = null;
 
-    // تشخیص محیط (کلاینت یا سرور)
     if (process.client) {
-      // سمت کلاینت: استفاده از localStorage
       token = localStorage.getItem("auth-token");
     } else {
-      // سمت سرور: استفاده از getCookie از h3
       const event = nuxtApp.ssrContext?.event;
       if (event) {
         token = h3GetCookie(event, "auth-token");
-      } else {
-        console.log("No SSR event available");
       }
     }
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    } else {
-      console.log("No auth token found");
+      configReq.headers.Authorization = `Bearer ${token}`;
     }
 
-    return config;
+    return configReq;
   });
 
-  // interceptor برای مدیریت خطاها
   api.interceptors.response.use(
     (response) => response,
     (error) => {
+      if (error.response?.status === 401) {
+        if (process.client) {
+          localStorage.removeItem("auth-token");
+          localStorage.removeItem("user");
+        }
+        navigateTo("/login");
+      }
+
       console.error("Axios error:", error.response?.data || error.message);
       return Promise.reject(error);
-    }
+    },
   );
 
   return {
-    provide: {
-      api,
-    },
+    provide: { api },
   };
 });

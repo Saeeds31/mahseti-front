@@ -1,194 +1,242 @@
-<script setup>
-import { useApi } from '@/composables/api/useApi'
-
-const { getBase } = useApi()
-
-// دریافت منوها از API
-const { data: baseData } = await useAsyncData(
-  'baseMenus',
-  async () => {
-    try {
-      return await getBase()
-    } catch (error) {
-      console.error('❌ Failed to fetch menus:', error)
-      return { data: { menus: [] } }
-    }
-  },
-  {
-    lazy: true,
-    server: false
-  }
-)
-
-const menuItems = computed(() => {
-  const menus = baseData.value?.data?.menus || []
-  return menus.map(menu => ({
-    title: menu.title,
-    path: menu.link || '#',
-    submenu: menu.children?.length > 0
-      ? menu.children.map(child => ({
-          title: child.title,
-          path: child.link || '#'
-        }))
-      : null
-  }))
-})
-
-const openSubmenu = ref(null)
-
-const toggleSubmenu = (index) => {
-  openSubmenu.value = openSubmenu.value === index ? null : index
-}
-</script>
-
-<template>  
-  <nav>
-    <!-- Desktop Menu -->
-    <ul class="hidden md:flex items-center gap-2">
-      <li 
-        v-for="item in menuItems" 
-        :key="item.path"
-        class="relative menu-wrapper"
-      >
-        <NuxtLink 
-          :to="item.path" 
-          class="menu-item pad rounded-inner text-sm font-medium cursor-pointer transition-all duration-300 inline-flex items-center gap-1"
-        >
-          {{ item.title }}
-            <iconSubMenu v-if="item.submenu" />
-        </NuxtLink>
-        
-        <ul 
-          v-if="item.submenu" 
-          class="submenu absolute top-12 right-0 min-w-[200px] mt-2 opacity-0 invisible translate-y-[-10px] transition-all duration-300 z-[100] bg-primary shadow rounded-inner border"
-        >
-          <li v-for="subItem in item.submenu" :key="subItem.path">
-            <NuxtLink 
-              :to="subItem.path" 
-              class="submenu-item pad block text-sm transition-all duration-300 border-b last:border-b-0"
-            >
-              {{ subItem.title }}
-            </NuxtLink>
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-    <!-- Mobile Menu (Accordion Style) -->
-    <ul class="md:hidden flex flex-col gap-2">
-      <li 
-        v-for="(item, index) in menuItems" 
-        :key="item.path"
-        class="mobile-menu-item"
-      >
-        <div class="flex items-center justify-between">
-          <NuxtLink 
-            v-if="!item.submenu"
-            :to="item.path" 
-            class="menu-item-mobile pad rounded-inner text-sm font-medium cursor-pointer transition-all duration-300 flex-1"
-          >
-            {{ item.title }}
+<template>
+  <nav
+    class="w-full bg-white dark:bg-gray-900 dark:border-gray-800 relative z-50"
+  >
+    <div class="mx-auto">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex-shrink-0 flex items-center">
+          <NuxtLink to="/" class="text-sm text-gray-800 dark:text-white pl-3">
+            صفحه اصلی
           </NuxtLink>
-          
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex space-x-8 space-x-reverse">
+          <ul class="flex flex-row gap-4">
+            <li v-for="item in menuItems" :key="item.id" class="group relative">
+              <!-- Parent Item -->
+              <NuxtLink
+                :to="item.link || '#'"
+                :class="[
+                  'flex items-center text-sm font-medium transition-colors py-5',
+                  isActive(item.link)
+                    ? 'text-indigo-600 font-bold dark:text-indigo-400'
+                    : 'text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400',
+                ]"
+              >
+                {{ item.title }}
+                <!-- <svg
+                  v-if="item.children && item.children.length > 0"
+                  class="w-4 h-4 mr-1 transform group-hover:rotate-180 transition-transform duration-200"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg> -->
+              </NuxtLink>
+
+              <!-- Dropdown / Submenu -->
+              <div
+                v-if="item.children && item.children.length > 0"
+                class="absolute top-full right-0 w-56 bg-white border border-gray-100 rounded-b-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 dark:bg-gray-800 dark:border-gray-700"
+              >
+                <ul class="py-2">
+                  <li v-for="sub in item.children" :key="sub.id">
+                    <NuxtLink
+                      :to="sub.link || '#'"
+                      :class="[
+                        'block px-4 py-2 text-sm',
+                        isActive(sub.link)
+                          ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-700 dark:text-indigo-400'
+                          : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-700',
+                      ]"
+                    >
+                      {{ sub.title }}
+                    </NuxtLink>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden flex items-center">
           <button
-            v-else
-            @click="toggleSubmenu(index)"
-            class="menu-item-mobile pad rounded-inner text-sm font-medium cursor-pointer transition-all duration-300 flex items-center justify-between w-full"
+            @click="mobileMenuOpen = !mobileMenuOpen"
+            class="text-gray-600 hover:text-gray-900 focus:outline-none dark:text-gray-300"
           >
-            <span>{{ item.title }}</span>
-            <svg 
-              class="w-4 h-4 transition-transform duration-300"
-              :class="{ 'rotate-180': openSubmenu === index }"
-              viewBox="0 0 12 12" 
+            <svg
+              class="h-6 w-6"
               fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <path d="M6 8L2 4L10 4L6 8Z" fill="currentColor"/>
+              <path
+                v-if="!mobileMenuOpen"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+              <path
+                v-else
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
-        
-        <transition name="accordion">
-          <ul 
-            v-if="item.submenu && openSubmenu === index" 
-            class="submenu-mobile mt-2 mr-4 flex flex-col gap-1 overflow-hidden"
-          >
-            <li v-for="subItem in item.submenu" :key="subItem.path">
-              <NuxtLink 
-                :to="subItem.path" 
-                class="submenu-item-mobile pad block text-sm transition-all duration-300 rounded-inner"
+      </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div
+      v-show="mobileMenuOpen"
+      class="md:hidden bg-white border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800"
+    >
+      <ul class="px-4 py-2 space-y-1">
+        <li v-for="item in menuItems" :key="item.id">
+          <div class="flex flex-col">
+            <div class="flex justify-between items-center w-full">
+              <NuxtLink
+                :to="item.link || '#'"
+                :class="[
+                  'block py-3 text-base font-medium',
+                  isActive(item.link)
+                    ? 'text-indigo-600 font-bold dark:text-indigo-400'
+                    : 'text-gray-700 dark:text-gray-200',
+                ]"
+                @click="!item.children?.length && (mobileMenuOpen = false)"
               >
-                {{ subItem.title }}
+                {{ item.title }}
               </NuxtLink>
-            </li>
-          </ul>
-        </transition>
-      </li>
-    </ul>
+
+              <!-- <button
+                v-if="item.children && item.children.length > 0"
+                @click.stop="toggleMobileSubmenu(item.id)"
+                class="p-2 focus:outline-none"
+              >
+                <svg
+                  class="w-5 h-5 text-gray-500 transform transition-transform duration-200"
+                  :class="{ 'rotate-180': activeMobileSub === item.id }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button> -->
+            </div>
+
+            <ul
+              v-if="item.children && item.children.length > 0"
+              v-show="activeMobileSub === item.id"
+              class="pr-4 border-r-2 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 mb-2 rounded-lg"
+            >
+              <li v-for="sub in item.children" :key="sub.id">
+                <NuxtLink
+                  :to="sub.link || '#'"
+                  :class="[
+                    'block py-2 text-sm',
+                    isActive(sub.link)
+                      ? 'text-indigo-600 font-semibold dark:text-indigo-400'
+                      : 'text-gray-600 hover:text-indigo-600 dark:text-gray-400',
+                  ]"
+                  @click="mobileMenuOpen = false"
+                >
+                  {{ sub.title }}
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
   </nav>
 </template>
 
-<style scoped>
-/* Desktop Styles */
-.menu-item:hover {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text-strong);
-}
+<script setup>
+import { ref, computed, watch } from "vue";
+import { useRoute } from "vue-router";
+import { useApi } from "@/composables/api/useApi";
 
-.menu-wrapper:hover .icon-arrow {
-  transform: rotate(180deg);
-}
+const route = useRoute();
+const mobileMenuOpen = ref(true);
+const activeMobileSub = ref(null);
 
-.menu-wrapper:hover .submenu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
+const { getBase } = useApi();
 
-.submenu-item:hover {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text-strong);
-}
+const { data: baseResponse, error: baseError } = await useAsyncData(
+  "layout-base-data",
+  () => getBase(),
+  { server: true, lazy: true },
+);
 
-.submenu-item.router-link-active {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text-strong);
-  font-weight: 500;
-}
+const resolveLink = (item) => {
+  if (item?.link) return item.link;
 
-/* Mobile Styles */
-.menu-item-mobile {
-  text-align: right;
-}
+  const title = (item?.title || "").trim();
 
-.menu-item-mobile:hover,
-.menu-item-mobile:active {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text-strong);
-}
+  if (title === "درباره ما") return "/about-us";
+  if (title === "تماس با ما") return "/contact-us";
 
-.submenu-item-mobile:hover,
-.submenu-item-mobile:active {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text-strong);
-}
+  if (item?.id) return `/products?category_id=${item.id}`;
 
-.submenu-item-mobile.router-link-active {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text-strong);
-  font-weight: 500;
-}
+  return "#";
+};
 
-/* Accordion Animation */
-.accordion-enter-active,
-.accordion-leave-active {
-  transition: all 0.3s ease;
-  max-height: 500px;
-}
+const normalizeMenus = (rawMenus) => {
+  if (!Array.isArray(rawMenus)) return [];
 
-.accordion-enter-from,
-.accordion-leave-to {
-  opacity: 0;
-  max-height: 0;
-  transform: translateY(-10px);
-}
-</style>
+  return rawMenus.map((m) => ({
+    id: m.id ?? m.title,
+    title: m.title ?? "",
+    link: resolveLink(m),
+    children: Array.isArray(m.children)
+      ? m.children.map((c) => ({
+          id: c.id ?? c.title,
+          title: c.title ?? "",
+          link: resolveLink(c),
+        }))
+      : [],
+  }));
+};
+
+const menuItems = computed(() => {
+  const data = baseResponse.value?.data ?? baseResponse.value ?? {};
+  const rawMenus = data.menus ?? [];
+  return normalizeMenus(rawMenus);
+});
+
+const isActive = (link) => {
+  if (!link || link === "#") return false;
+  return route.fullPath === link;
+};
+
+watch(
+  () => route.fullPath,
+  () => {
+    mobileMenuOpen.value = false;
+    activeMobileSub.value = null;
+  },
+);
+
+const toggleMobileSubmenu = (id) => {
+  activeMobileSub.value = activeMobileSub.value === id ? null : id;
+};
+</script>

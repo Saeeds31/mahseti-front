@@ -1,3 +1,4 @@
+<!-- components/cart/ProgressSteps.vue -->
 <template>
   <div class="flex justify-center items-center mb-8 flex-wrap">
     <div class="flex items-center gap-2 md:gap-4">

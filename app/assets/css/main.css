@@ -1,266 +1,304 @@
 @import "tailwindcss";
 @import "tailwindcss/utilities";
 
-
-
 :root {
-   /* 🎨 رنگ‌های اصلی (Light Theme) */
-   --bg-primary: #fff;
-   --bg-secondary: #72B742;
-   --accent: #EAEEEF;
- 
-   /* 🌿 نسخه‌های کم‌رنگ */
-   /* --bg-primary-fade: #E1EFD8; */
-   --bg-secondary-fade: #C8E3B6 ;
-   --accent-fade: #F5F5F5;
- 
-   /* 📝 رنگ‌های متن */
-   --text: #000;
-   --text-strong: #72B742;
-   --text-muted: #848484;
-   --text-primery:#fff;
- 
-   /* ⚙️ رنگ بردر */
-   --border: #848484;
- --border-light :#D6D6D6;
-   /* 🌤 سایه‌ها */
-   --shadow:0px 0px 7.5px 0px rgba(0, 0, 0, 0.25);
+  /* 🎨 رنگ‌های اصلی (Light Theme) */
+  --bg-primary: #fff;
+  --bg-secondary: #72b742;
+  --accent: #eaeeef;
 
+  /* 🌿 نسخه‌های کم‌رنگ */
+  /* --bg-primary-fade: #E1EFD8; */
+  --bg-secondary-fade: #c8e3b6;
+  --accent-fade: #f5f5f5;
 
+  /* 📝 رنگ‌های متن */
+  --text: #000;
+  --text-strong: #72b742;
+  --text-muted: #848484;
+  --text-primery: #fff;
 
-   /* رنگ های مختلف در سایت  */
-   --red : #CE1515;
-   --gold : #F79F00;
+  /* ⚙️ رنگ بردر */
+  --border: #848484;
+  --border-light: #d6d6d6;
+  /* 🌤 سایه‌ها */
+  --shadow: 0px 0px 7.5px 0px rgba(0, 0, 0, 0.25);
 
+  /* رنگ های مختلف در سایت  */
+  --red: #ce1515;
+  --gold: #f79f00;
 
-   --rounded :24px;
- }
- 
- 
-body {
-   background-color: var(--bg-primary);
-   color: var(--text);
+  --rounded: 24px;
 }
 
+body {
+  background-color: var(--bg-primary);
+  color: var(--text);
+}
 
-.container{
-   width: 85% ;
-   margin: 0 auto;
+.container {
+  width: 85%;
+  margin: 0 auto;
 }
 
 .icon-btn {
-   background-color: var(--bg-secondary-fade);
-   transition: background-color 0.4s ease;
- }
- 
- .icon-btn:hover {
-   background-color: var(--bg-secondary);
- }
+  /* background-color: var(--bg-secondary-fade); */
+  /* transition: background-color 0.4s ease; */
+}
+
+.icon-btn:hover {
+  background-color: var(--bg-secondary);
+}
 
 /* فاصله گذاری */
 
 .gap {
-   margin-top: 130px ;
+  margin-top: 130px;
 }
 
 .pad {
-   padding: 10px 14px;
+  padding: 10px 14px;
 }
 
 .rounded {
-   border-radius:var(--rounded );
+  border-radius: var(--rounded);
 }
 
 .rounded-inner {
-   border-radius: 8px;
+  border-radius: 8px;
 }
 
 /* بردر */
 
 .border {
-   border: 1px solid var(--border-light);
+  border: 1px solid var(--border-light);
 }
-.border-b{
-   border-bottom: 1px solid var(--border-light);
+.border-b {
+  border-bottom: 1px solid var(--border-light);
 }
-
 
 /* دکمه اصلی */
 
 .btn {
-   background-color: var(--bg-secondary);
-   color: var(--bg-primary);
-   border: none;
-   border-radius: 8px;
-   padding: 8px 34px;
-   font-size: 16px;
-   font-weight: 500;
-   cursor: pointer;
-   transition: all 0.4s ease;
+  background-color: var(--bg-secondary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 34px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s ease;
 }
 
 .btn:hover {
-   background-color:var(--bg-secondary-fade);
-   color:var(--bg-secondary) ;
-
+  background-color: var(--bg-secondary-fade);
+  color: var(--bg-secondary);
 }
 
-
-.btnLight{
-   background-color:var(--bg-secondary-fade);
-   color:var(--bg-secondary) ;
-   border: none;
-   border-radius: 8px;
-   padding: 8px 34px;
-   font-size: 16px;
-   font-weight: 500;
-   cursor: pointer;
-   transition: all 0.4s ease;
+.btnLight {
+  background-color: var(--bg-secondary-fade);
+  color: var(--bg-secondary);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 34px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s ease;
 }
 
-
-
-.btnborderBlack{
-   background-color: var(--bg-primary);
-   color: var(--text);
-   border: 1px solid var(--text);
-   border-radius: 8px;
-   padding: 8px 34px;
-   font-size: 16px;
-   font-weight: 500;
-   cursor: pointer;
-   transition: all 0.4s ease;
+.btnborderBlack {
+  background-color: var(--bg-primary);
+  color: var(--text);
+  border: 1px solid var(--text);
+  border-radius: 8px;
+  padding: 8px 34px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s ease;
 }
-
 
 .btnborderBlack:hover {
-   background-color:var(--text);
-   color:var(--bg-primary) ;
-
+  background-color: var(--text);
+  color: var(--bg-primary);
 }
 
 /* سایه ها */
 
 .shadow {
-   box-shadow: var(--shadow);
+  box-shadow: var(--shadow);
 }
 
 .shadow-hover {
-   transition: all 0.4s ease;
+  transition: all 0.4s ease;
 }
 
 .shadow-hover:hover {
-   box-shadow: var(--shadow-hover);
+  box-shadow: var(--shadow-hover);
 }
 
 /* رنگ های background */
 
 .bg-primary {
-   background-color: var(--bg-primary);
+  background-color: var(--bg-primary);
 }
 
 .bg-secondary {
-   background-color: var(--bg-secondary);
+  background-color: var(--bg-secondary);
 }
 
 .bg-accent {
-   background-color: var(--accent);
+  background-color: var(--accent);
 }
 
 .bg-primary-fade {
-   background-color: var(--bg-primary-fade);
+  background-color: var(--bg-primary-fade);
 }
 
 .bg-secondary-fade {
-   background-color: var(--bg-secondary-fade);
+  background-color: var(--bg-secondary-fade);
 }
 
 .bg-accent-fade {
-   background-color: var(--accent-fade);
+  background-color: var(--accent-fade);
 }
 
 /* رنگ های متن */
 
 .text {
-   color: var(--text);
+  color: var(--text);
 }
 
 .text-strong {
-   color: var(--text-strong);
+  color: var(--text-strong);
 }
 
 .text-muted {
-   color: var(--text-muted);
+  color: var(--text-muted);
 }
 
-
-.text-primery{
-   color: var(--text-primery);
+.text-primery {
+  color: var(--text-primery);
 }
-
 
 /* استایل دکمه‌های رادیویی */
 
 input[type="radio"] {
-   appearance: none;
-   -webkit-appearance: none;
-   width: 20px;
-   height: 20px;
-   border: 2px solid var(--border-light);
-   border-radius: 50%;
-   background-color: var(--bg-primary);
-   cursor: pointer;
-   position: relative;
-   transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-light);
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 input[type="radio"]:hover {
-   border-color: var(--bg-secondary-fade);
+  border-color: var(--bg-secondary-fade);
 }
 
 input[type="radio"]:checked {
-   border-color: var(--bg-secondary);
-   background-color: var(--bg-primary);
+  border-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
 }
 
 input[type="radio"]:checked::after {
-   content: '';
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-   width: 10px;
-   height: 10px;
-   border-radius: 50%;
-   background-color: var(--bg-secondary);
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
 }
 
 input[type="radio"]:focus {
-   outline: none;
-   box-shadow: 0 0 0 3px var(--bg-secondary-fade);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--bg-secondary-fade);
 }
 
 input[type="radio"]:disabled {
-   cursor: not-allowed;
-   opacity: 0.5;
-   border-color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: var(--text-muted);
 }
 
-
-@media screen and (max-width : 768px) {
-   .gap {
-      margin-top: 60px ;
-   }
-
-   .container{
-      width: 90% ;
-      margin: 0 auto;
-   }
+/* btn slider */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  display: none !important;
+  content: none !important;
 }
 
+/* Base button */
+.custom-nav-btn {
+  width: 32px;
+  height: 32px;
+  background: #ed2e68;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    opacity 0.25s ease;
+}
 
+/* disabled */
+.custom-nav-btn.swiper-button-disabled {
+  background: rgba(188, 188, 188, 0.35);
+  backdrop-filter: blur(2px);
+  border: 1px solid #aeacac !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.custom-nav-btn.swiper-button-disabled img {
+  filter: brightness(0) saturate(100%);
+  opacity: 0.5;
+}
 
+/* Hero / Special Offers Navigation Position */
+.hero-nav {
+  position: absolute;
+  top: 12px;
+  left: 48px;
+  display: flex;
+  gap: 8px;
+  z-index: 30;
+}
 
+@media (max-width: 768px) {
+  .hero-nav {
+    top: -8px;
+    left: 32px;
+    gap: 6px;
+  }
 
+  .custom-nav-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .gap {
+    margin-top: 60px;
+  }
+
+  .container {
+    width: 90%;
+    margin: 0 auto;
+  }
+}

@@ -1,3 +1,4 @@
+<!-- components/shared/breadCrumb.vue -->
 <template>
   <nav class="my-6 flex items-center gap-2 text-sm">
     <!-- همیشه اولین آیتم صفحه اصلی -->

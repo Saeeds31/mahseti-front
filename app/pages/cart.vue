@@ -1,3 +1,4 @@
+<!-- pages/cart.vue -->
 <template>
   <div class="container">
     <SharedBreadCrumb :items="[{ label: 'سبد خرید', href: '/cart' }]" />

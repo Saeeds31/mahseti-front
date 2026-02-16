@@ -14,7 +14,7 @@
       type="submit"
       class="absolute left-7 top-[65%] -translate-y-1/2"
     >
-      <iconSearch class="w-4 h-4" />
+      <IconSearch class="w-4 h-4" />
     </button>
   </form>
 </template>

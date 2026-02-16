@@ -1,42 +1,46 @@
 <template>
   <header class="mb-4">
-    <div class="bg-secondary h-2 rounded-t-[8px]"></div>
-
-    <!-- Desktop Header -->
+    <headerTopBar />
     <div class="hidden md:block">
-      <div class="container w-full flex justify-between py-2">
+      <div class="container w-full flex justify-between py-4">
         <div class="flex items-center gap-5">
-          <sharedLogo :width="'100px'" height="'67px'" />
-          <headerSearch />
+          <SharedLogo :width="'100px'" height="'67px'" />
+          <HeaderSearch />
         </div>
 
         <div class="flex items-center gap-2">
-          <headerBtnProfile />
+          <HeaderBtnProfile />
 
           <nuxt-link to="/cart" class="relative">
-            <iconCart class="icon-btn p-2 rounded-full" />
+            <img
+              src="/icons/bag.svg"
+              class="rounded-xl border p-1 border-gray-300 bg-secondary"
+            />
             <span v-if="cartItemsCount > 0" class="cart-badge">
               {{ cartItemsCount }}
             </span>
           </nuxt-link>
 
           <nuxt-link to="/panel/favorites">
-            <iconFavorite class="icon-btn p-2 rounded-full" />
+            <img
+              src="/icons/heart.svg"
+              class="border-2 border-gray-300 rounded-xl p-2"
+            />
           </nuxt-link>
         </div>
       </div>
 
       <div class="container py-2 flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <headerMenu />
+          <HeaderMenu />
         </div>
 
         <div class="flex items-center">
           <div>
-            <h3 :style="{ color: 'var(--gold)' }">تلفن تماس</h3>
-            <div>{{ phoneNumber }}</div>
+            <h3 class="font-bold">تلفن تماس</h3>
+            <div class="font-medium">{{ phoneNumber }}</div>
           </div>
-          <iconPhone />
+          <IconPhone />
         </div>
       </div>
       <div class="border-b h-1"></div>
@@ -46,18 +50,25 @@
     <div class="md:hidden">
       <div class="container w-full flex justify-between items-center py-3">
         <!-- Hamburger Menu (Left) -->
-        <button @click="toggleMenu" class="icon-btn p-2 rounded-full">
-          <iconMenu />
+        <button
+          @click="toggleMenu"
+          class="p-2 rounded-xl border-2 border-gray-300"
+        >
+          <IconMenu />
         </button>
 
         <!-- Logo (Center) -->
-        <sharedLogo :width="'80px'" :height="'54px'" />
+        <SharedLogo :width="'80px'" :height="'54px'" />
 
         <!-- Profile (Right) -->
 
         <div class="flex gap-2">
           <nuxt-link to="/cart" class="relative">
-            <iconCart class="icon-btn p-2 rounded-full" />
+            <img
+              src="/icons/bag.svg"
+              class="rounded-xl border p-1 border-gray-300 bg-secondary"
+            />
+
             <span v-if="cartItemsCount > 0" class="cart-badge">
               {{ cartItemsCount }}
             </span>
@@ -77,35 +88,32 @@
             @click.stop
           >
             <!-- Close Button -->
-            <button
-              @click="toggleMenu"
-              class="mb-6 icon-btn p-2 rounded-full absolute left-2"
-            >
-              <iconClose />
+            <button @click="toggleMenu" class="mb-6 p-2 absolute left-2">
+              <IconClose />
             </button>
 
             <!-- Menu Content -->
             <div class="flex flex-col gap-6 mt-10">
-              
-              <div class=" flex justify-between items-center">
-               <headerBtnProfile />
+              <div class="flex justify-between items-center">
+                <HeaderBtnProfile />
                 <nuxt-link to="/panel/favorites">
-                  <iconFavorite class="icon-btn p-2 rounded-full" />
+                  <img
+                    src="/icons/heart-red.svg"
+                    class="border-2 border-gray-300 rounded-xl p-2"
+                  />
                 </nuxt-link>
               </div>
-              <headerMenu />
+              <HeaderMenu />
               <div class="w-full flex justify-between gap-4">
                 <div class="flex items-center gap-3">
-                  <iconPhone />
+                  <IconPhone />
                   <div>
-                    <h3 :style="{ color: 'var(--gold)' }" class="text-sm">
-                      تلفن تماس
-                    </h3>
+                    <h3 class="text-sm font-normal">تلفن تماس</h3>
                     <div>{{ phoneNumber }}</div>
                   </div>
                 </div>
               </div>
-              <headerSearch />
+              <HeaderSearch />
             </div>
           </div>
         </div>
@@ -156,7 +164,7 @@ const { data: baseData } = await useAsyncData(
   {
     lazy: true,
     server: false,
-  }
+  },
 );
 
 // شماره تلفن از settings
@@ -170,9 +178,9 @@ const phoneNumber = computed(() => {
     (s) =>
       s.key === "support_phone" ||
       s.key === "phone" ||
-      s.key === "contact_phone"
+      s.key === "contact_phone",
   );
-  return phoneSettings?.value || "09338789456";
+  return phoneSettings?.value || "۰۹۳۷۵۰۱۵۷۶۹";
 });
 </script>
 

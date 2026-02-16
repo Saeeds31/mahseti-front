@@ -1,178 +1,346 @@
 <template>
-  <footer class="gap bg-secondary-fade rounded-tl-4xl rounded-tr-4xl rounded-bl-4xl pt-8 pb-4">
-    <div class="container mx-auto">
-      <!-- بخش اصلی فوتر -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-8 border-b">
-        <!-- ستون 1: لوگو و شبکه‌های اجتماعی -->
-        <div class="flex flex-col items-center lg:items-start gap-6">
-          <nuxt-link to="/">
-            <img
-              class="w-[180px] h-auto"
-              src="/images/logo.png"
-              :alt="settings?.site?.site_name || 'ویتامیکس'"
-            >
-          </nuxt-link>
+  <footer
+    class="relative bg-[#0B0B0B] text-gray-400 pt-12 px-4 md:px-8 xl:px-28"
+  >
+    <div
+      class="relative mx-auto grid grid-cols-[1fr_100px] lg:grid-cols-[1fr_80px] gap-6"
+    >
+      <!-- ستون راست -->
+      <div class="space-y-10">
+        <!-- ردیف ۱: مزیت‌ها -->
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-8 items-start">
+          <!-- لوگو -->
+          <div class="flex h-full items-start max-md:mt-8">
+            <NuxtLink to="/">
+              <img
+                src="/images/logo.svg"
+                :alt="siteName"
+                class="opacity-90 max-w-[160px]"
+              />
+            </NuxtLink>
+          </div>
 
-          <!-- آیکون‌های شبکه‌های اجتماعی -->
-          <div class="flex items-center gap-3" v-if="settings?.social">
-            <a
-              v-if="settings.social.instagram"
-              :href="settings.social.instagram"
-              target="_blank"
-              class="w-8 h-8 bg-[#2C3E50] rounded-full flex items-center justify-center hover:bg-[#1a252f] transition"
-              aria-label="اینستاگرام"
-            >
-              <AtSign :size="16" class="text-white" />
-            </a>
-            <a
-              v-if="settings.social.telegram"
-              :href="settings.social.telegram"
-              target="_blank"
-              class="w-8 h-8 bg-[#2C3E50] rounded-full flex items-center justify-center hover:bg-[#1a252f] transition"
-              aria-label="تلگرام"
-            >
-              <Send :size="16" class="text-white" />
-            </a>
-            <a
-              v-if="settings.social.whatsapp"
-              :href="settings.social.whatsapp"
-              target="_blank"
-              class="w-8 h-8 bg-[#2C3E50] rounded-full flex items-center justify-center hover:bg-[#1a252f] transition"
-              aria-label="واتساپ"
-            >
-              <MessageCircle :size="16" class="text-white" />
-            </a>
-            <a
-              v-if="settings.social.youtube"
-              :href="settings.social.youtube"
-              target="_blank"
-              class="w-8 h-8 bg-[#2C3E50] rounded-full flex items-center justify-center hover:bg-[#1a252f] transition"
-              aria-label="یوتیوب"
-            >
-              <Video :size="16" class="text-white" />
-            </a>
+          <!-- لیست مزیت‌ها -->
+          <div v-for="item in advantages" :key="item.title" class="space-y-2">
+            <img :src="item.icon" :alt="item.title" class="h-10 w-auto" />
+            <h4 class="text-sm font-semibold text-white">
+              {{ item.title }}
+            </h4>
+            <p class="text-xs text-gray-500 leading-5">
+              {{ item.subtitle }}
+            </p>
           </div>
         </div>
 
-        <!-- ستون 2: لینک‌های مهم (از API) -->
-        <div class="flex flex-col gap-4">
-          <h4 class="font-bold text-lg">لینک های مهم</h4>
-          <ul class="space-y-2">
-            <li v-for="menu in menus?.slice(0, 4)" :key="menu.id">
-              <nuxt-link
-                :to="menu.link"
-                class="text-sm hover:text-strong transition flex items-center gap-1"
+        <!-- ردیف ۲: لینک‌ها -->
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 text-xs md:mr-8"
+        >
+          <!-- ستون: لینک‌های مهم -->
+          <div>
+            <h5
+              class="mb-4 text-white font-semibold text-sm border-b border-white/10 pb-2 inline-block"
+            >
+              دسترسی سریع
+            </h5>
+            <div class="grid grid-cols-3 gap-x-4 gap-y-6">
+              <ul
+                v-for="(col, i) in quickAccessColumns"
+                :key="`quick-${i}`"
+                class="space-y-3"
               >
-                <ChevronLeft :size="14" />
-                {{ menu.title }}
-              </nuxt-link>
-            </li>
-          </ul>
-        </div>
+                <li v-for="item in col" :key="item.label">
+                  <NuxtLink
+                    :to="item.href"
+                    class="hover:text-pink-500 transition-colors duration-200 flex items-center gap-1"
+                  >
+                    <span>{{ item.label }}</span>
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-        <!-- ستون 3: دسترسی سریع -->
-        <div class="flex flex-col gap-4">
-          <h4 class="font-bold text-lg">دسترسی سریع</h4>
-          <ul class="space-y-2">
-            <li>
-              <nuxt-link to="/products" class="text-sm hover:text-strong transition flex items-center gap-1">
-                <ChevronLeft :size="14" />
-                محصولات ویتامیکس
-              </nuxt-link>
-            </li>
-            <li>
-              <nuxt-link to="/about" class="text-sm hover:text-strong transition flex items-center gap-1">
-                <ChevronLeft :size="14" />
-                درباره ما
-              </nuxt-link>
-            </li>
-            <li>
-              <nuxt-link to="/contact" class="text-sm hover:text-strong transition flex items-center gap-1">
-                <ChevronLeft :size="14" />
-                تماس با ما
-              </nuxt-link>
-            </li>
-            <li>
-              <nuxt-link to="/blog" class="text-sm hover:text-strong transition flex items-center gap-1">
-                <ChevronLeft :size="14" />
-                شیوه خشک
-              </nuxt-link>
-            </li>
-          </ul>
-        </div>
-
-        <!-- ستون 4: ارتباط با ما (از API) -->
-        <div class="flex flex-col gap-4">
-          <h4 class="font-bold text-lg">ارتباط با ما</h4>
-          <ul class="space-y-3">
-            <li v-if="settings?.site?.site_address" class="flex items-start gap-2 text-sm">
-              <MapPin :size="16" class="shrink-0 mt-0.5 text-strong" />
-              <span class="text-muted">{{ settings.site.site_address }}</span>
-            </li>
-            <li v-if="settings?.site?.site_email" class="flex items-start gap-2 text-sm">
-              <Mail :size="16" class="shrink-0 mt-0.5 text-strong" />
-              <a
-                :href="`mailto:${settings.site.site_email}`"
-                class="text-muted hover:text-strong transition"
+          <!-- ستون: دسته‌بندی -->
+          <div>
+            <h5
+              class="mb-4 text-white font-semibold text-sm border-b border-white/10 pb-2 inline-block"
+            >
+              دسته‌بندی‌ها
+            </h5>
+            <div class="grid grid-cols-3 gap-x-4 gap-y-6">
+              <ul
+                v-for="(col, i) in categoryColumns"
+                :key="`cat-${i}`"
+                class="space-y-3"
               >
-                {{ settings.site.site_email }}
-              </a>
-            </li>
-            <li v-if="settings?.site?.site_phone" class="flex items-start gap-2 text-sm">
-              <Phone :size="16" class="shrink-0 mt-0.5 text-strong" />
-              <a
-                :href="`tel:${settings.site.site_phone}`"
-                class="text-muted hover:text-strong transition"
-                dir="ltr"
-              >
-                {{ settings.site.site_phone }}
-              </a>
-            </li>
-          </ul>
-        </div>
+                <li v-for="item in col" :key="item.label">
+                  <NuxtLink
+                    :to="item.href"
+                    class="hover:text-pink-500 transition-colors duration-200 flex items-center gap-1"
+                  >
+                    <span>{{ item.label }}</span>
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-        <!-- ستون 5: نمادها -->
-        <div class="flex flex-col gap-4 items-center lg:items-start">
-          <a href="#" class="block" target="_blank">
-            <img src="@/assets/images/enamad.png" alt="نماد اعتماد الکترونیکی" class="w-24 h-auto">
-          </a>
-          <a href="#" class="block" target="_blank">
-            <img src="@/assets/images/samandehi.png" alt="نماد ساماندهی" class="w-24 h-auto">
-          </a>
+          <!-- ستون: شبکه‌های اجتماعی -->
+          <div>
+            <h5
+              class="mb-4 text-white font-semibold text-sm border-b border-white/10 pb-2 inline-block"
+            >
+              شبکه‌های اجتماعی
+            </h5>
+            <ul class="space-y-4">
+              <li v-for="item in socialLinks" :key="item.label">
+                <a
+                  :href="item.href"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex items-center gap-3 hover:text-white transition"
+                >
+                  <img
+                    :src="item.icon"
+                    :alt="item.label"
+                    class="w-5 h-5 opacity-80"
+                  />
+                  <span>{{ item.label }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- ستون: اطلاعات تماس -->
+          <div>
+            <h5
+              class="mb-4 text-white font-semibold text-sm border-b border-white/10 pb-2 inline-block"
+            >
+              اطلاعات تماس
+            </h5>
+            <ul class="space-y-4 leading-relaxed">
+              <li
+                v-for="item in contactItems"
+                :key="item.label"
+                class="flex items-start gap-3 text-sm"
+              >
+                <img
+                  v-if="item.icon"
+                  :src="item.icon"
+                  class="w-5 h-5 mt-1 opacity-80 shrink-0"
+                  :alt="item.label"
+                />
+                <a
+                  v-if="item.href"
+                  :href="item.href"
+                  class="hover:text-white transition"
+                  :dir="item.dir || 'rtl'"
+                >
+                  {{ item.label }}
+                </a>
+                <span v-else class="text-gray-500">
+                  {{ item.label }}
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
-      <!-- بخش پایین فوتر -->
-      <div class="pt-4 text-center">
-        <p class="text-sm text-muted">
-          All rights reserved
-        </p>
+      <!-- ستون چپ -->
+      <div class="relative flex flex-col items-center lg:items-end gap-6">
+        <button
+          class="sticky top-6  rounded-md bg-pink-700 py-2 px-[6px] font-normal !text-xs text-white transition hover:bg-pink-600 backdrop-blur-sm"
+          type="button"
+          @click="scrollTop"
+        >
+          برگشت به بالا
+        </button>
+
+        <div class="absolute bottom-0 left-0 hidden lg:block">
+          <img src="/images/star.svg" alt="star" class="mb-2" />
+        </div>
       </div>
     </div>
+
+    <div class="mt-12 border-t border-white/10" />
+
+    <p class="py-4 text-center font-normal text-base text-gray-500">
+      {{ footerNote }}
+    </p>
   </footer>
 </template>
 
 <script setup>
-import { AtSign, Send, MessageCircle, Video, ChevronLeft, MapPin, Mail, Phone } from 'lucide-vue-next'
-import { useSettingStore } from '../../store/settings.js'
-import { storeToRefs } from 'pinia'
+import { computed } from "vue";
+import { useSettingStore } from "@/store/settings.js";
+import { storeToRefs } from "pinia";
 
-const settingStore = useSettingStore()
-const { settings, menus } = storeToRefs(settingStore)
+const settingStore = useSettingStore();
+const { settings, menus } = storeToRefs(settingStore);
+
+const siteName = computed(
+  () => settings.value?.site?.site_name || "Mahset Shop",
+);
+
+const footerNote = computed(() => {
+  return settings.value?.site?.site_footer_note || "Design by padhosha";
+});
+
+const advantages = [
+  {
+    title: "ارسال سریع",
+    subtitle: "۳ تا ۷ روز کاری",
+    icon: "/icons/delivery.svg",
+  },
+  { title: "پشتیبانی", subtitle: "در روزهای کاری", icon: "/icons/support.svg" },
+  {
+    title: "قیمت مناسب",
+    subtitle: "خرید بدون واسطه",
+    icon: "/icons/price.svg",
+  },
+  { title: "پرداخت امن", subtitle: "درگاه بانکی", icon: "/icons/payment.svg" },
+  {
+    title: "ضمانت کیفیت",
+    subtitle: "خرید با اطمینان",
+    icon: "/icons/quality.svg",
+  },
+];
+
+const fallbackQuickAccess = [
+  { label: "سوتین اسفنجی", href: "/category/sutien-esfanji" },
+  { label: "سوتین نخی", href: "/category/sutien-nakhy" },
+  { label: "سوتین ورزشی", href: "/category/sutien-varzeshi" },
+  { label: "سوتین معمولی", href: "/category/sutien-mamooli" },
+  { label: "نیم تنه", href: "/category/nim-tane" },
+  { label: "لباس خواب", href: "/category/lebas-khab" },
+  { label: "شورت توری", href: "/category/short-tori" },
+  { label: "شورت اسلیپ", href: "/category/short-eslip" },
+  { label: "شورت پادار", href: "/category/short-padar" },
+];
+
+const fallbackCategories = [
+  { label: "سوتین", href: "/category/sutien" },
+  { label: "شورت", href: "/category/short" },
+  { label: "نیم تنه", href: "/category/nim-tane" },
+  { label: "لباس", href: "/category/lebas" },
+  { label: "اکسسوری", href: "/category/accessory" },
+  { label: "ست لباس زیر", href: "/category/set" },
+];
+
+const fallbackSocials = [
+  {
+    label: "اینستاگرام: mahsetishop",
+    href: "https://instagram.com/mahsetishop",
+    icon: "/icons/instagram.svg",
+  },
+  {
+    label: "تلگرام: mahsetishop",
+    href: "https://t.me/mahsetishop",
+    icon: "/icons/telegram.svg",
+  },
+];
+
+const fallbackContacts = [
+  {
+    label: "۰۹۳۷ - ۵۰۱ - ۵۷۶۹",
+    href: "tel:09375015769",
+    icon: "/icons/phone.svg",
+    dir: "ltr",
+  },
+  {
+    label: "گرگان، خیابان پنج آذر، جنب سالن تختی",
+    icon: "/icons/location.svg",
+  },
+];
+
+const buildColumns = (items, columnCount) => {
+  if (!items?.length) return [];
+  const perColumn = Math.ceil(items.length / columnCount);
+  const columns = [];
+  for (let i = 0; i < items.length; i += perColumn) {
+    const slice = items.slice(i, i + perColumn);
+    if (slice.length) {
+      columns.push(slice);
+    }
+  }
+  return columns;
+};
+
+const quickAccessColumns = computed(() => {
+  const source = menus.value?.length
+    ? menus.value.map((menu) => ({
+        label: menu.title,
+        href: menu.link || "#",
+      }))
+    : fallbackQuickAccess;
+
+  return buildColumns(source, 3);
+});
+
+const categoryColumns = computed(() => buildColumns(fallbackCategories, 3));
+
+const socialLinks = computed(() => {
+  const socials = settings.value?.social || {};
+  const map = [
+    { key: "instagram", label: "اینستاگرام", icon: "/icons/instagram.svg" },
+    { key: "telegram", label: "تلگرام", icon: "/icons/telegram.svg" },
+    { key: "whatsapp", label: "واتساپ", icon: "/icons/whatsapp.svg" },
+    { key: "youtube", label: "یوتیوب", icon: "/icons/youtube.svg" },
+  ];
+
+  const dynamicItems = map
+    .filter((item) => socials[item.key])
+    .map((item) => ({
+      label: `${item.label}: ${extractHandle(socials[item.key])}`,
+      href: socials[item.key],
+      icon: item.icon,
+    }));
+
+  return dynamicItems.length ? dynamicItems : fallbackSocials;
+});
+
+const contactItems = computed(() => {
+  const site = settings.value?.site || {};
+  const items = [];
+
+  if (site.site_phone) {
+    items.push({
+      label: site.site_phone,
+      href: `tel:${site.site_phone.replace(/\s+/g, "")}`,
+      icon: "/icons/phone.svg",
+      dir: "ltr",
+    });
+  }
+
+  if (site.site_email) {
+    items.push({
+      label: site.site_email,
+      href: `mailto:${site.site_email}`,
+      icon: "/icons/mail.svg",
+      dir: "ltr",
+    });
+  }
+
+  if (site.site_address) {
+    items.push({
+      label: site.site_address,
+      icon: "/icons/location.svg",
+    });
+  }
+
+  return items.length ? items : fallbackContacts;
+});
+
+const extractHandle = (url) => {
+  if (!url) return "";
+  const cleaned = url.replace(/\/+$/, "");
+  const parts = cleaned.split("/");
+  return parts[parts.length - 1] || cleaned;
+};
+
+const scrollTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 </script>
-
-<style scoped>
-/* استفاده از متغیرهای CSS برای رنگ‌ها */
-footer {
-  background-color: var(--bg-secondary-fade);
-  color: var(--text);
-}
-
-h4 {
-  color: var(--text);
-}
-
-a:hover {
-  color: var(--text-strong);
-}
-</style>

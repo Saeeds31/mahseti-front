@@ -101,7 +101,7 @@
 
         <!-- Footer -->
         <button
-          class="btn w-full flex items-center justify-center gap-2 "
+          class="btn w-full flex items-center !bg-pink-600 justify-center gap-2 "
           @click="applyFilters"
         >
           <Filter class="w-4 h-4" />

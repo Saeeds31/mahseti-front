@@ -1,4 +1,4 @@
-// plugins/axios.js
+// composables/axios.js
 import axios from 'axios'
 
 export default defineNuxtPlugin(() => {

@@ -1,13 +1,9 @@
 <template>
   <section class="container gap">
     <!-- Title -->
-    <homeTitleSection
-      titleBlack="محصولات"
-      titleStrong="ویتامیکس فروت"
-      description="میوه‌های خشک ویتامیکس؛ ترکیبی از سلامتی، طعم طبیعی و لذتی ماندگار"
-    />
+    <HomeTitleSection titleBlack="محصولات" titleStrong="ماه ستی " />
 
-     <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 ">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-4">
       <shared-product-card
         v-for="(product, index) in products"
         :key="index"
@@ -15,15 +11,13 @@
       />
     </div>
 
-    
- 
     <div class="flex justify-center mt-10">
-       <nuxt-link
-      class="btn"
-      to="/products"
-    >
-      مشاهده بیشتر
-    </nuxt-link>
+      <nuxt-link
+        class="bg-[#ED2E68] text-white px-5 py-2 rounded-xl text-[0.95rem]"
+        to="/products"
+      >
+        مشاهده بیشتر
+      </nuxt-link>
     </div>
   </section>
 </template>
@@ -33,9 +27,7 @@
 // const settingStore = useSettingStore();
 // const { settings } = storeToRefs(settingStore);
 
-
 defineProps({
   products: Array,
 });
-
 </script>

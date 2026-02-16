@@ -37,11 +37,7 @@
 
     <div class="lg:hidden w-full">
       <Swiper :slides-per-view="1.2" :space-between="16" class="w-full">
-        <SwiperSlide
-          v-for="(item, index) in list"
-          :key="index"
-          class="!h-auto"
-        >
+        <SwiperSlide v-for="(item, index) in list" :key="index" class="!h-auto">
           <BigCard :card="item" />
         </SwiperSlide>
       </Swiper>
@@ -55,11 +51,11 @@ import "swiper/css";
 import BigCard from "./BigCard.vue";
 import SmallCard from "./SmallCard.vue";
 defineProps({
-  list: Array,
+  list: {
+    type: Array,
+    default: () => [],
+  },
 });
-
-
-
 </script>
 
 <style scoped>

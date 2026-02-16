@@ -1,3 +1,4 @@
+<!-- pages/products/index.js -->
 <template>
   <main class="container mx-auto p-4 md:p-6" dir="rtl">
     <sharedBreadCrumb :items="[{ label: 'محصولات', href: '/products' }]" />

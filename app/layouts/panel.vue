@@ -14,7 +14,7 @@
         <slot />
       </main>
     </div>
-    <sharedFooter />
+    <SharedFooter />
     <AuthLoginModal />
   </div>
 </template>

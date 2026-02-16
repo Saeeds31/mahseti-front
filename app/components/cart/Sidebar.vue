@@ -36,7 +36,14 @@
             <div class="flex-1 flex flex-col justify-between">
               <div>
                 <h3 class="font-semibold text-sm">{{ item.title }}</h3>
-                <p class="text-xs text-muted mt-1" v-if="item.variant && item.variant.attributes && item.variant.attributes.length > 0">
+                <p
+                  class="text-xs text-muted mt-1"
+                  v-if="
+                    item.variant &&
+                    item.variant.attributes &&
+                    item.variant.attributes.length > 0
+                  "
+                >
                   {{ item.variant.attributes[0].value }}
                 </p>
               </div>
@@ -49,7 +56,9 @@
                   >
                     <Minus :size="14" />
                   </button>
-                  <span class="text-sm w-6 text-center">{{ item.quantity }}</span>
+                  <span class="text-sm w-6 text-center">{{
+                    item.quantity
+                  }}</span>
                   <button
                     @click="increaseQuantity(item)"
                     class="w-6 h-6 rounded border border-muted flex items-center justify-center hover:bg-secondary hover:text-white transition"
@@ -67,15 +76,18 @@
               </div>
 
               <p class="text-secondary font-bold mt-2">
-                {{ ((item.line_final_total || item.price * item.quantity)).toLocaleString('fa-IR') }} تومان
+                {{
+                  (
+                    item.line_final_total || item.price * item.quantity
+                  ).toLocaleString("fa-IR")
+                }}
+                تومان
               </p>
             </div>
           </div>
         </div>
 
-        <div v-else class="text-center py-10 text-muted">
-          سبد خرید خالی است
-        </div>
+        <div v-else class="text-center py-10 text-muted">سبد خرید خالی است</div>
       </div>
 
       <!-- Footer با دکمه‌ها -->
@@ -83,7 +95,7 @@
         <div class="flex justify-between items-center mb-4">
           <span class="font-semibold">جمع کل:</span>
           <span class="font-bold text-lg text-secondary">
-            {{ totalPrice.toLocaleString('fa-IR') }} تومان
+            {{ totalPrice.toLocaleString("fa-IR") }} تومان
           </span>
         </div>
 
@@ -95,10 +107,7 @@
           مشاهده سبد خرید
         </nuxt-link>
 
-        <button
-          @click="emit('close')"
-          class="btnborderBlack w-full"
-        >
+        <button @click="emit('close')" class="btnborderBlack w-full">
           ادامه خرید
         </button>
       </div>
@@ -111,6 +120,7 @@ import { computed, watch } from 'vue'
 import { X, Plus, Minus, Trash2 } from 'lucide-vue-next'
 import { useApi } from '@/composables/api/useApi'
 import { useCartStore } from '~/store/cart'
+import type { useToast } from '#imports'
 
 const props = defineProps({
   show: Boolean,
@@ -163,7 +173,7 @@ const increaseQuantity = async (item) => {
     console.log('✅ Quantity increased successfully')
   } catch (error) {
     console.error('❌ Failed to increase quantity:', error)
-    const toast = useToast()
+    const toast = useToast();
     toast.add({
       title: 'خطا',
       description: 'خطا در افزایش تعداد محصول',

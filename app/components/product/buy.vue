@@ -1,3 +1,4 @@
+<!-- app/components/product/buy.vue -->
 <template>
   <div class="space-y-6">
     <!-- دکمه‌ها -->
