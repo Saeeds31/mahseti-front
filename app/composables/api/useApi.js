@@ -45,7 +45,6 @@ export const useApi = () => {
     return res.data;
   };
 
-
   const getShopFilters = async () => {
     const res = await $api.get("/front/shop-filters");
     return res.data;

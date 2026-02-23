@@ -1,88 +1,98 @@
 <!-- components/header/Search.vue -->
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, computed } from "vue";
+import { useApi } from "~/composables/api/useApi";
 
-// --- متغیرهای وضعیت (State) ---
+const { getShopFilters, getProducts } = useApi();
+
+// --- State ---
 const query = ref("");
-const results = ref([]);
+const results = ref<any[]>([]);
 const loading = ref(false);
 const searched = ref(false);
 
-// --- متغیرهای مربوط به ظاهر (UI) ---
+// --- UI ---
 const open = ref(false);
-const selectedCategory = ref(null);
+const selectedCategory = ref<any>(null);
 
-// لیست دسته‌بندی‌ها
-const categories = ref([
-  { id: 0, title: "همه دسته‌ها" },
-  { id: 1, title: "انواع ست" },
-  { id: 2, title: "انواع سوتین" },
-  { id: 3, title: "انواع لباس راحتی" },
-  { id: 4, title: "لوازم نیم تنه" },
-]);
+// --- Categories ---
+const categories = ref<any[]>([{ id: 0, title: "همه دسته‌ها" }]);
 
-// --- متدها ---
 const toggleDropdown = () => (open.value = !open.value);
 
-const selectCategory = (category) => {
+const selectCategory = (category: any) => {
   selectedCategory.value = category;
   open.value = false;
 };
 
-// تابع کمکی برای ساخت آدرس کامل تصویر
-const getImageUrl = (img) => {
-  if (!img) return "/images/placeholder.png"; // تصویر جایگزین اگر عکس نبود
-  if (img.startsWith("http")) return img; // اگر آدرس کامل است
-  // اگر آدرس نسبی است، دامین اصلی API را به اولش اضافه کن
+// --- Helpers ---
+const getImageUrl = (img: string | null) => {
+  if (!img) return "/images/placeholder.png";
+  if (img.startsWith("http")) return img;
   return `https://api.mahseti.shop${img}`;
 };
 
-// --- منطق اصلی جستجو ---
+// --- Fetch Categories ---
+const fetchCategories = async () => {
+  try {
+    const res: any = await getShopFilters();
+    const list = res?.data?.categories || [];
+
+    categories.value = [{ id: 0, title: "همه دسته‌ها" }, ...list];
+
+    if (!selectedCategory.value) {
+      selectedCategory.value = categories.value[0];
+    }
+  } catch (err) {
+    categories.value = [{ id: 0, title: "همه دسته‌ها" }];
+  }
+};
+
+// --- شرط مجاز بودن سرچ ---
+const canSearch = computed(() => {
+  const hasQuery = !!query.value.trim();
+  const hasCategory =
+    selectedCategory.value && selectedCategory.value.id !== 0;
+
+  return hasQuery || hasCategory;
+});
+
+// --- Search ---
 const handleSearch = async () => {
-  if (!query.value.trim()) return;
+  if (!canSearch.value) return;
 
   loading.value = true;
   searched.value = true;
   open.value = false;
-  results.value = []; // پاک کردن نتایج قبلی
+  results.value = [];
 
   try {
-    const params = {
-      search: query.value,
+    const params: any = {
+      search: query.value.trim() || undefined,
       in_stock: 1,
     };
 
-    // اضافه کردن فیلتر دسته‌بندی اگر انتخاب شده باشد
     if (selectedCategory.value && selectedCategory.value.id !== 0) {
       params.category_id = selectedCategory.value.id;
     }
 
-    console.log("در حال ارسال درخواست...", params);
+    const res: any = await getProducts(params);
 
-    // *** نکته مهم: استفاده از آدرس پروکسی برای دور زدن CORS ***
-    // درخواست به /api-proxy/... می‌رود و ناکست آن را به https://api.mahseti.shop/... هدایت می‌کند
-    const response = await $fetch("/api-proxy/api/v1/front/products", {
-      method: "GET",
-      params: params,
-    });
-
-    console.log("پاسخ API:", response);
-
-    // مدیریت دریافت داده‌ها (چک می‌کنیم آرایه کجاست)
-    if (Array.isArray(response)) {
-      results.value = response;
-    } else if (response.data && Array.isArray(response.data)) {
-      results.value = response.data; // معمولاً در لاراول اینجاست
+    if (Array.isArray(res?.data)) {
+      results.value = res.data;
+    } else if (Array.isArray(res)) {
+      results.value = res;
     } else {
       results.value = [];
     }
   } catch (err) {
-    console.error("خطا در جستجو:", err);
     results.value = [];
   } finally {
     loading.value = false;
   }
 };
+
+onMounted(fetchCategories);
 </script>
 
 <template>
@@ -180,7 +190,7 @@ const handleSearch = async () => {
           v-for="cat in categories"
           :key="cat.id"
           type="button"
-          class="w-full text-right px-4 py-2 text-sm hover:bg-gray-100 transition-colors block text-gray-700"
+          class="w-full text-right px-4 py-2 text-sm hover:bg-gray-100 transition-colors block text-gray-700 z-50"
           @click="selectCategory(cat)"
         >
           {{ cat.title }}
@@ -216,9 +226,7 @@ const handleSearch = async () => {
 
         <!-- قیمت -->
         <span class="text-xs md:text-sm font-bold mt-1 text-green-600">
-          {{
-            item.price ? Number(item.price).toLocaleString() : "ناموجود"
-          }}
+          {{ item.price ? Number(item.price).toLocaleString() : "ناموجود" }}
           تومان
         </span>
       </NuxtLink>

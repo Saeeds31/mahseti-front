@@ -1,11 +1,11 @@
 <template>
   <!-- Title -->
-  <div class="text-center ">
-    <h2 class="text-lg lg:text-3xl font-bold ">
+  <div class="text-center">
+    <h2 class="text-lg lg:text-3xl font-bold">
       {{ titleBlack }}
       <span class="text-strong">{{ titleStrong }}</span>
     </h2>
-   
+    <p class="text-gray-500 py-2">{{ description }}</p>
   </div>
 </template>
 

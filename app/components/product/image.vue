@@ -1,4 +1,4 @@
-<!-- components/ProductImage.vue -->
+<!-- app/components/product/image.vue -->
 <script setup>
    const { $getImageUrl } = useNuxtApp();
 

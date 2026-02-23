@@ -80,7 +80,7 @@
       <transition name="slide">
         <div
           v-if="isMenuOpen"
-          class="fixed inset-0 bg-black/30 bg-opacity-50 z-50"
+          class="fixed inset-0 bg-black/30 bg-opacity-50 z-20"
           @click="toggleMenu"
         >
           <div

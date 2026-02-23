@@ -116,127 +116,134 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
-import { X, Plus, Minus, Trash2 } from 'lucide-vue-next'
-import { useApi } from '@/composables/api/useApi'
-import { useCartStore } from '~/store/cart'
-import type { useToast } from '#imports'
+import { computed, watch } from "vue";
+import { X, Plus, Minus, Trash2 } from "lucide-vue-next";
+import { useApi } from "@/composables/api/useApi";
+import { useCartStore } from "~/store/cart";
+const toast = useToast();
 
 const props = defineProps({
   show: Boolean,
   cartItems: {
     type: Array,
-    default: () => []
-  }
-})
+    default: () => [],
+  },
+});
 
-const emit = defineEmits(['close', 'cart-updated'])
+const emit = defineEmits(["close", "cart-updated"]);
 
-const { increaseCartItem, decreaseCartItem, deleteCartItem } = useApi()
-const cartStore = useCartStore()
+const { increaseCartItem, decreaseCartItem, deleteCartItem } = useApi();
+const cartStore = useCartStore();
 
 // Debug: مشاهده تغییرات show prop
-watch(() => props.show, (newVal) => {
-  console.log('🎭 Sidebar show prop changed:', newVal)
-  console.log('🛒 Cart items:', props.cartItems)
-})
+watch(
+  () => props.show,
+  (newVal) => {
+    console.log("🎭 Sidebar show prop changed:", newVal);
+    console.log("🛒 Cart items:", props.cartItems);
+  },
+);
 
-watch(() => props.cartItems, (newVal) => {
-  console.log('📦 Cart items updated in sidebar:', newVal)
-}, { deep: true })
+watch(
+  () => props.cartItems,
+  (newVal) => {
+    console.log("📦 Cart items updated in sidebar:", newVal);
+  },
+  { deep: true },
+);
 
 const totalPrice = computed(() => {
-  if (!props.cartItems || props.cartItems.length === 0) return 0
+  if (!props.cartItems || props.cartItems.length === 0) return 0;
   return props.cartItems.reduce((sum, item) => {
     // استفاده از line_final_total اگر موجود باشد، در غیر این صورت محاسبه کن
-    const itemTotal = item.line_final_total || (item.price * item.quantity)
-    return sum + itemTotal
-  }, 0)
-})
+    const itemTotal = item.line_final_total || item.price * item.quantity;
+    return sum + itemTotal;
+  }, 0);
+});
 
 // افزایش تعداد
 const increaseQuantity = async (item) => {
-  console.log('➕ Increasing quantity for item:', item)
+  console.log("➕ Increasing quantity for item:", item);
 
-  const token = process.client ? localStorage.getItem('auth-token') : null
+  const token = process.client ? localStorage.getItem("auth-token") : null;
 
   if (!token) {
     // برای کاربران guest از localStorage استفاده می‌کنیم
-    cartStore.increaseQuantity(item.variant_id)
-    emit('cart-updated')
-    return
+    cartStore.increaseQuantity(item.variant_id);
+    emit("cart-updated");
+    return;
   }
 
   try {
-    await increaseCartItem(item.id)
-    emit('cart-updated')
-    console.log('✅ Quantity increased successfully')
+    await increaseCartItem(item.id);
+    emit("cart-updated");
+    console.log("✅ Quantity increased successfully");
   } catch (error) {
-    console.error('❌ Failed to increase quantity:', error)
+    console.error("❌ Failed to increase quantity:", error);
     const toast = useToast();
     toast.add({
-      title: 'خطا',
-      description: 'خطا در افزایش تعداد محصول',
-      color: 'red'
-    })
+      title: "خطا",
+      description: "خطا در افزایش تعداد محصول",
+      color: "red",
+    });
   }
-}
+};
 
 // کاهش تعداد
 const decreaseQuantity = async (item) => {
-  console.log('➖ Decreasing quantity for item:', item)
+  console.log("➖ Decreasing quantity for item:", item);
 
-  const token = process.client ? localStorage.getItem('auth-token') : null
+  const token = process.client ? localStorage.getItem("auth-token") : null;
 
   if (!token) {
     // برای کاربران guest از localStorage استفاده می‌کنیم
-    cartStore.decreaseQuantity(item.variant_id)
-    emit('cart-updated')
-    return
+    cartStore.decreaseQuantity(item.variant_id);
+    emit("cart-updated");
+    return;
   }
 
   try {
-    await decreaseCartItem(item.id)
-    emit('cart-updated')
-    console.log('✅ Quantity decreased successfully')
+    await decreaseCartItem(item.id);
+    emit("cart-updated");
+    console.log("✅ Quantity decreased successfully");
   } catch (error) {
-    console.error('❌ Failed to decrease quantity:', error)
-    const toast = useToast()
+    console.error("❌ Failed to decrease quantity:", error);
+    const toast = useToast();
     toast.add({
-      title: 'خطا',
-      description: 'خطا در کاهش تعداد محصول',
-      color: 'red'
-    })
+      title: "خطا",
+      description: "خطا در کاهش تعداد محصول",
+      color: "red",
+    });
   }
-}
+};
 
 // حذف محصول
 const removeItem = async (item) => {
-  console.log('🗑️ Removing item:', item)
+  console.log("🗑️ Removing item:", item);
 
-  const token = process.client ? localStorage.getItem('auth-token') : null
+  const token = process.client ? localStorage.getItem("auth-token") : null;
 
   if (!token) {
     // برای کاربران guest از localStorage استفاده می‌کنیم
-    cartStore.removeItem(item.variant_id)
-    emit('cart-updated')
-    return
+    cartStore.removeItem(item.variant_id);
+    emit("cart-updated");
+    return;
   }
 
   try {
-    await deleteCartItem(item.id)
-    emit('cart-updated')
-    console.log('✅ Item removed successfully')
+    await deleteCartItem(item.id);
+    emit("cart-updated");
+    console.log("✅ Item removed successfully");
   } catch (error) {
-    console.error('❌ Failed to remove item:', error)
-    const toast = useToast()
+    console.error("❌ Failed to remove item:", error);
+    const toast = useToast();
     toast.add({
-      title: 'خطا',
-      description: 'خطا در حذف محصول',
-      color: 'red'
-    })
+      title: "خطا",
+      description: "خطا در حذف محصول",
+      color: "red",
+    });
   }
-}
+};
 </script>
 
 <style scoped>

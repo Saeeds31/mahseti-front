@@ -1,7 +1,7 @@
 <!-- components/shared/productCard.vue -->
 <template>
   <div
-    class="w-full h-[460px] rounded-2xl bg-white border-2 border-gray-200 p-4 flex flex-col gap-4 relative mt-10 sm:mt-14 md:mt-16"
+    class="w-full h-[460px] rounded-2xl bg-white border-2 border-gray-200 p-4 flex flex-col gap-4 relative mt-10"
   >
     <!-- درصد تخفیف -->
     <!-- <div
@@ -19,9 +19,7 @@
       class="absolute top-3 left-3 gap-1 text-[var(--red)] transition-transform active:scale-90"
     >
       <img src="/icons/heart.svg" alt="" v-if="isFavoriteComputed" />
-      <!-- <IconFavFull v-if="isFavoriteComputed" /> -->
       <img src="/icons/heart-red.svg" alt="" v-else />
-      <!-- <IconFavLine v-else /> -->
     </button>
 
     <!-- Colors + More -->
@@ -59,8 +57,8 @@
 
     <!-- Product Image -->
     <img
-      v-if="product?.main_image"
-      :src="$getImageUrl(product.main_image)"
+      v-if="imageSrc"
+      :src="imageSrc"
       :alt="product.title ?? 'محصول'"
       class="w-full h-56 max-md:h-44 object-contain rounded-lg"
     />
@@ -81,9 +79,9 @@
         {{ sizesText }}
       </p>
 
-      <p class="text-gray-700 font-semibold text-sm">
-        کد {{ product?.code ?? "-" }}
-      </p>
+      <!-- <p class="text-gray-700 font-semibold text-sm">
+        کد {{ product?.code || product?.sku || product?.barcode || "-" }}
+      </p> -->
     </div>
 
     <div class="flex items-center justify-between pt-4">
@@ -102,16 +100,16 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button
+        <!-- <button
           class="p-2 flex justify-center rounded-md border border-gray-300"
           @click="goToProduct"
         >
           <img src="/icons/package-search.svg" alt="" />
-        </button>
+        </button> -->
 
         <button
           class="p-1 flex justify-center rounded-md border border-lime-400 bg-lime-600"
-          @click="handleAddToCart"
+          @click="goToProduct"
           :disabled="isAddingToCart"
         >
           <img src="/icons/bag.svg" alt="" />
@@ -187,8 +185,43 @@ const onClickOutside = (e) => {
 
 // Sizes text
 const sizesText = computed(() => {
-  if (props.product?.sizes?.length) return props.product.sizes.join(" - ");
-  return "M ، L، XL";
+  // 1) اگر از API sizes دارید
+  if (props.product?.sizes?.length) {
+    return props.product.sizes.join(" - ");
+  }
+
+  // 2) استخراج از meta_description
+  const md = props.product?.meta_description || "";
+  if (!md) return "M ، L، XL";
+
+  // خطی که شامل "سایز" باشد
+  const sizeLine = md
+    .split("\n")
+    .map((l) => l.trim())
+    .find((l) => l.includes("سایز"));
+
+  if (!sizeLine) return "M ، L، XL";
+
+  // اگر "فری سایز (38 تا 42)" بود
+  if (sizeLine.includes("فری سایز")) {
+    const paren = sizeLine.match(/\(([^)]+)\)/);
+    return paren ? paren[1].trim() : "فری سایز";
+  }
+
+  // حالت "سایز : 80 تا 95" یا "سایز 75-80-85"
+  const afterColon = sizeLine.split(":")[1];
+  if (afterColon) return afterColon.trim();
+
+  // اگر دو نقطه نداشت، بعد از کلمه "سایز" برگردان
+  return sizeLine.replace(/سایز/gi, "").replace(/[：:]/g, "").trim();
+});
+
+// Product Image URL
+const imageSrc = computed(() => {
+  const img = props.product?.main_image;
+  if (!img) return "";
+  if (img.startsWith("http://") || img.startsWith("https://")) return img;
+  return $getImageUrl(img);
 });
 
 // Add To Cart

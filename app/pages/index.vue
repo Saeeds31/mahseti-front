@@ -33,10 +33,21 @@
         v-if="home.banners?.after_discount?.length"
         :banners="home.banners.after_discount"
       />
-      <HomeNewProducts :products="home.new_products" />
 
-      <HomePoints />
-      <HomeSend />
+      <!-- محصولات جدید با دیتا از products و فیلتر از shop-filters -->
+      <HomeNewProducts
+        :category="categoriesFromProducts"
+        :products="homeProducts"
+      />
+
+      <HomeBannerTriple :items="banners" />
+
+      <HomeVotedRestockSection :products="topDiscountedProducts" />
+
+      <HomeBannerTriple
+        v-if="bannersBeforeAbout.length"
+        :items="bannersBeforeAbout"
+      />
 
       <HomeBanners
         v-if="home.banners?.after_new_product?.length"
@@ -46,8 +57,10 @@
         v-if="home.banners?.before_blog?.length"
         :banners="home.banners.before_blog"
       />
-
-      <HomeArticles :list="home.blogs" />
+      <AboutHomeStor />
+      <AboutFAQSection />
+      />
+      <!-- <HomeArticles :list="home.blogs" /> -->
     </div>
 
     <div
@@ -60,20 +73,46 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useHomeStore } from "@/store/home";
 import { useApi } from "@/composables/api/useApi";
 import { usePageLoading } from "@/composables/usePageLoading";
+import { useWishlist } from "@/composables/useWishlist";
 
 const homeStore = useHomeStore();
-const { getHome, getBase } = useApi();
+const { getHome, getBase, getProducts } = useApi();
 const { fetchWishlist } = useWishlist();
 const { loadPageWithBase } = usePageLoading();
 
-// بارگذاری همزمان base + home + wishlist
+// وضعیت‌ها
 const pending = ref(true);
 const error = ref(null);
 
+// داده‌های محصولات
+const homeProducts = ref([]);
+
+// استخراج دسته‌ها از خود محصولات
+const categoriesFromProducts = computed(() => {
+  const map = new Map();
+
+  for (const p of homeProducts.value || []) {
+    for (const c of p?.categories || []) {
+      if (!map.has(c.id)) {
+        map.set(c.id, {
+          id: c.id,
+          title: c.title,
+          slug: c.slug,
+          show_in_home: true,
+          show_products_in_home: true,
+        });
+      }
+    }
+  }
+
+  return Array.from(map.values());
+});
+
+// بارگذاری همزمان base + home + wishlist + محصولات
 try {
   await loadPageWithBase(
     [
@@ -85,6 +124,16 @@ try {
         return fetchedData;
       },
       async () => await fetchWishlist(),
+      async () => {
+        const res = await getProducts({
+          page: 1,
+          in_stock: 1,
+          sort_by: "latest",
+        });
+        homeProducts.value =
+          res?.data?.data?.data || res?.data?.data || res?.data || [];
+        return homeProducts.value;
+      },
     ],
     "در حال بارگذاری صفحه اصلی...",
     getBase,
@@ -98,6 +147,10 @@ try {
 
 const home = computed(() => homeStore.home);
 
+const topDiscountedProducts = computed(
+  () => home.value?.top_discounted_products || [],
+);
+
 const refresh = async () => {
   pending.value = true;
   error.value = null;
@@ -110,6 +163,16 @@ const refresh = async () => {
           homeStore.setHome(fetchedData);
           return fetchedData;
         },
+        async () => {
+          const res = await getProducts({
+            page: 1,
+            in_stock: 1,
+            sort_by: "latest",
+          });
+          homeProducts.value =
+            res?.data?.data?.data || res?.data?.data || res?.data || [];
+          return homeProducts.value;
+        },
       ],
       "در حال بارگذاری مجدد...",
     );
@@ -120,7 +183,76 @@ const refresh = async () => {
   }
 };
 
-console.log("home : ", home);
+const bannerAssets = {
+  1: {
+    image: "/banner/banner-sleep.svg",
+    bgFrom: "#0288D1",
+    bgTo: "#006FAD",
+    button: "مشاهده و خرید",
+  },
+  2: {
+    image: "/banner/banner-men.svg",
+    bgFrom: "#009432",
+    bgTo: "#006D26",
+    button: "مشاهده و خرید",
+  },
+  3: {
+    image: "/banner/banner-fantasy.svg",
+    bgFrom: "#00C9A7",
+    bgTo: "#00A98F",
+    button: "مشاهده و خرید",
+  },
+  4: {
+    image: "/banner/banner-top.svg",
+    bgFrom: "#029C83",
+    bgTo: "#018A73",
+    button: "مشاهده و خرید",
+  },
+  5: {
+    image: "/banner/banner-bra.svg",
+    bgFrom: "#8CA61C",
+    bgTo: "#6D8C1A",
+    button: "مشاهده و خرید",
+  },
+  6: {
+    image: "/banner/banner-socks.svg",
+    bgFrom: "#7A0D8C",
+    bgTo: "#A030C7",
+    button: "مشاهده و خرید",
+  },
+};
+
+const banners = computed(() => {
+  const apiItems = home.value?.banners?.after_products || [];
+  return apiItems.map((b) => {
+    const asset = bannerAssets[b.id] || {};
+    return {
+      id: b.id,
+      title: b.title,
+      link: b.link,
+      image: asset.image || "/banner/default.svg",
+      bgFrom: asset.bgFrom || "#1f2937",
+      bgTo: asset.bgTo || "#111827",
+      button: asset.button || "مشاهده",
+    };
+  });
+});
+
+const bannersBeforeAbout = computed(() => {
+  const apiItems = home.value?.banners?.before_about || [];
+  return apiItems.map((b) => {
+    const asset = bannerAssets[b.id] || {};
+    return {
+      id: b.id,
+      title: b.title,
+      link: b.link,
+      image: asset.image || "/banner/default.svg",
+      bgFrom: asset.bgFrom || "#1f2937",
+      bgTo: asset.bgTo || "#111827",
+      button: asset.button || "مشاهده",
+    };
+  });
+});
 </script>
 
 <style scoped>
