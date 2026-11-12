@@ -1,15 +1,15 @@
 <template>
-  <div class="w-full h-[450px] overflow-hidden rounded-2xl">
+  <div class="w-full  rounded-2xl">
     <Swiper :modules="[Autoplay, Pagination, Navigation]" :slides-per-view="1" :loop="false"
       :autoplay="{ delay: 3500, disableOnInteraction: false }" :pagination="true" :navigation="{
         nextEl: '.hero-next',
         prevEl: '.hero-prev',
       }" class="hero-swiper" dir="rtl">
-      <SwiperSlide v-for="slide in slides" :key="slide.id" class="w-full h-full">
+      <SwiperSlide v-for="slide in slides" :key="slide.id" class="w-full">
         <nuxt-link :to="slide.link"
-          class="relative w-full h-full bg-[#f9dada] rounded-[20px] px-8 py-9 flex justify-between">
-          <div :class="slide.type" class="absolute inset-0 flex z-0">
-            <img :src="$getImageUrl(slide.image)" class="h-full w-full object-cover" />
+          class="relative w-full  bg-[#f9dada] rounded-[20px] flex justify-between">
+          <div :class="slide.type" class="flex">
+            <img :src="$getImageUrl(slide.image)" class="w-full rounded-[20px] h-max object-cover" />
           </div>
         </nuxt-link>
       </SwiperSlide>
