@@ -304,8 +304,17 @@
               <span class="font-medium" :class="shippingCost === 0 ? 'text-green-600' : ''">
                 {{
                   shippingCost === 0
-                    ? "رایگان"
+                    ? "0 تومان"
                     : `${shippingCost.toLocaleString("fa-IR")} تومان`
+                }}
+              </span>
+            </div>
+
+            <div class="flex justify-between items-center" v-if="shippingCost === 0">
+              <span class="text-muted">شیوه ارسال:</span>
+              <span class="font-medium" :class="shippingCost === 0 ? 'text-green-600' : ''">
+                {{
+                  checkoutSummary?.shipping_method?.name
                 }}
               </span>
             </div>
