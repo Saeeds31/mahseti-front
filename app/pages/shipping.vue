@@ -97,7 +97,7 @@ watch(selectedAddress, async (newAddressId, oldAddressId) => {
 
     // انتخاب خودکار اولین روش ارسال
     if (shippingMethods.value.length > 0) {
-      selectedShipping.value = shippingMethods.value[0].id
+      selectedShipping.value = shippingMethods.value[0]?.id ?? null
     }
   }
 })
@@ -125,7 +125,7 @@ onMounted(async () => {
     await fetchShippingMethods(selectedAddress.value, selectedReservation.value?.order_id)
 
     if (shippingMethods.value.length > 0) {
-      selectedShipping.value = shippingMethods.value[0].id
+      selectedShipping.value = shippingMethods.value[0]?.id ?? null
     }
   }
 })
@@ -134,7 +134,7 @@ const shippingCost = computed(() => {
   const method = shippingMethods.value.find(m => m.id === selectedShipping.value)
   return method ? method.cost : 0
 })
-
+const forcedFree = computed(() => shippingMethods.value.some(m => m.is_campaign_free))
 const total = computed(() => subtotal.value + shippingCost.value)
 
 async function handleDeleteAddress(id) {
@@ -167,7 +167,7 @@ async function addNewAddress() {
   if (selectedAddress.value) {
     await fetchShippingMethods(selectedAddress.value, selectedReservation.value?.order_id)
     if (shippingMethods.value.length > 0) {
-      selectedShipping.value = shippingMethods.value[0].id
+      selectedShipping.value = shippingMethods.value[0]?.id ?? null
     }
   }
 }
@@ -197,10 +197,10 @@ async function handleNextStep() {
 
   try {
 
-    const response = await $api.post('/front/shippings', {
-      address_id: selectedAddress.value,
-      shipping_method: selectedShipping.value
-    })
+    // const response = await $api.post('/front/shippings', {
+    //   address_id: selectedAddress.value,
+    //   shipping_method: selectedShipping.value
+    // })
 
     localStorage.setItem('shipping-info', JSON.stringify({
       address_id: selectedAddress.value,
@@ -356,7 +356,9 @@ async function handleNextStep() {
       <!-- Shipping Method -->
       <div class="bg-primary">
         <h3 class="text-lg font-semibold mb-4">شیوه ارسال</h3>
-
+        <div v-if="forcedFree" class="bg-green-100 text-green-800 rounded-inner p-3 mb-4 text-sm">
+          🎉 {{shippingMethods.find(m => m.is_campaign_free)?.message}}
+        </div>
         <div v-if="shippingLoading" class="text-center py-10">
           <SharedLoadingSpinner size="sm" />
         </div>
@@ -371,13 +373,16 @@ async function handleNextStep() {
             :class="{ 'border-secondary ': selectedShipping === method.id }">
             <div class="flex flex-col gap-2">
               <div class="flex items-center gap-2">
-                <input type="radio" name="shipping" :value="method.id" v-model="selectedShipping" />
+                <input type="radio" name="shipping" :value="method.id" v-model="selectedShipping"
+                  :disabled="method.is_campaign_free" />
                 <span class="font-semibold text-sm md:text-base">{{ method.name }}</span>
               </div>
               <p class="text-xs text-muted">{{ method.message ?? method.description }}</p>
               <div class="flex items-center justify-between mt-2">
                 <p class="text-sm text-muted">هزینه ارسال</p>
-                <p class="text-strong font-semibold">{{ method.cost.toLocaleString("fa-IR") }} تومان</p>
+                <p class="text-strong font-semibold" :class="{ 'text-green-600': method.cost === 0 }">
+                  {{ method.cost === 0 ? 'رایگان' : method.cost.toLocaleString("fa-IR") + ' تومان' }}
+                </p>
               </div>
             </div>
           </label>

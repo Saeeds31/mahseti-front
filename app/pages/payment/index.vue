@@ -298,7 +298,13 @@
               <span>تخفیف کوپن ({{ couponCode }}):</span>
               <span class="font-semibold">- {{ apiCouponDiscount.toLocaleString("fa-IR") }} تومان</span>
             </div>
-
+            <div v-if="campaignDiscount > 0" class="flex justify-between items-center text-green-600">
+              <span>تخفیف کمپین ({{ campaignInfo?.campaign_name }}):</span>
+              <span class="font-semibold">- {{ campaignDiscount.toLocaleString("fa-IR") }} تومان</span>
+            </div>
+            <div v-if="campaignInfo?.free_shipping" class="text-green-600 text-xs">
+              🎉 ارسال این سفارش به مناسبت کمپین «{{ campaignInfo.campaign_name }}» رایگان است
+            </div>
             <div class="flex justify-between items-center">
               <span class="text-muted">هزینه ارسال:</span>
               <span class="font-medium" :class="shippingCost === 0 ? 'text-green-600' : ''">
@@ -555,7 +561,8 @@ const fetchCheckoutSummary = async () => {
     isFetchingSummary.value = false;
   }
 };
-
+const campaignDiscount = computed(() => checkoutSummary.value?.summary?.campaign_discount ?? 0)
+const campaignInfo = computed(() => checkoutSummary.value?.campaign || null)
 // محاسبه قیمت‌ها - از API اگر موجود باشه، وگرنه از localStorage
 const subtotal = computed(() => {
   if (checkoutSummary.value?.summary?.subtotal !== undefined) {
