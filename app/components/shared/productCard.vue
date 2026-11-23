@@ -8,7 +8,7 @@
     </button>
     <img v-if="imageSrc" :src="imageSrc" :alt="product.title ?? 'محصول'"
       class="w-full h-58 max-xl:h-44 max-md:h-34 object-contain rounded-lg scale-[1.5]" />
-    <h2 class="md:min-h-[82px] text-base font-bold text-gray-900 leading-[1.6] line-clamp-2 text-right bg-white   relative p-4 pb-2">
+    <h2 class="min-h-[66px] md:min-h-[82px] text-[13px] md:text-base font-bold text-gray-900 leading-[1.6] line-clamp-2 text-right bg-white   relative p-4 pb-2">
       {{ product?.title ?? "محصول" }}
     </h2>
     <div class="flex items-center justify-between pt-2 mt-0 p-4 relative z-10 bg-white">

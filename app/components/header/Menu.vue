@@ -8,14 +8,17 @@
           <ul class="flex flex-row gap-4">
             <li v-for="item in menuItems" :key="item.id" class="group relative">
               <!-- Parent Item -->
-              <NuxtLink :to="item.link || '#'" :class="[
+              <NuxtLink :to="item.link || '#'" class="flex gap-1 items-center" :class="[
                 'flex items-center text-sm font-medium transition-colors py-5',
                 isActive(item.link)
                   ? 'text-indigo-600 font-bold '
                   : ' hover:text-indigo-600 ',
               ]">
-                {{ item.title }}
+                <span>
+                  {{ item.title }}
 
+                </span>
+                <IconArrowBottom v-if="item.children && item.children.length > 0" />
               </NuxtLink>
 
               <!-- Dropdown / Submenu -->
@@ -30,6 +33,7 @@
                         : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-700',
                     ]">
                       {{ sub.title }}
+
                     </NuxtLink>
                   </li>
                 </ul>
@@ -40,20 +44,31 @@
       </div>
     </div>
     <!-- v-show="mobileMenuOpen" -->
+    <!-- Mobile Menu -->
     <div class="md:hidden bg-white border-t border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <ul class="px-4 py-2 space-y-1">
         <li v-for="item in menuItems" :key="item.id">
           <div class="flex flex-col">
             <div class="flex justify-between items-center w-full">
               <NuxtLink :to="item.link || '#'" :class="[
-                'block py-3 text-base font-medium',
+                'block py-3 text-base font-medium flex-1',
                 isActive(item.link)
                   ? 'text-indigo-600 font-bold dark:text-indigo-400'
                   : 'text-gray-700 dark:text-gray-200',
               ]" @click="props.menuToggleFunction()">
-                <!-- @click="!item.children?.length && (mobileMenuOpen = false)" -->
                 {{ item.title }}
               </NuxtLink>
+
+              <!-- دکمه باز/بسته کردن زیرمنو -->
+              <button v-if="item.children && item.children.length > 0" type="button" class="p-3 text-gray-500"
+                :aria-expanded="activeMobileSub === item.id" aria-label="نمایش زیرمنو"
+                @click.stop="toggleMobileSubmenu(item.id)">
+                <svg class="w-4 h-4 transition-transform duration-200"
+                  :class="{ 'rotate-180': activeMobileSub === item.id }" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
             </div>
 
             <ul v-if="item.children && item.children.length > 0" v-show="activeMobileSub === item.id"
@@ -64,7 +79,7 @@
                   isActive(sub.link)
                     ? 'text-indigo-600 font-semibold dark:text-indigo-400'
                     : 'text-gray-600 hover:text-indigo-600 dark:text-gray-400',
-                ]" @click="mobileMenuOpen = false">
+                ]" @click="props.menuToggleFunction()">
                   {{ sub.title }}
                 </NuxtLink>
               </li>

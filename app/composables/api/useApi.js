@@ -11,7 +11,16 @@ export const useApi = () => {
     const res = await $api.get("/front/home");
     return res.data;
   };
+  const getProductSearch = async (params = {}) => {
+    const cleaned = Object.fromEntries(
+      Object.entries({
+        search: params.search ?? undefined,
+      }).filter(([, v]) => v !== undefined && v !== ""),
+    );
 
+    const res = await $api.get("/front/products/search", { params: cleaned });
+    return res.data;
+  };
   const getProducts = async (params = {}) => {
     const cleaned = Object.fromEntries(
       Object.entries({
@@ -269,5 +278,6 @@ export const useApi = () => {
     chargeWallet,
     getCheckoutSummary,
     getSimilarProducts,
+    getProductSearch,
   };
 };
